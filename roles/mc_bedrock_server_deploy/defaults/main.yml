@@ -1,0 +1,3 @@
+---
+# defaults file for mc_bedrock_server_deploy
+service_path: "/opt/bedrock-server"

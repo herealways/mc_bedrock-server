@@ -1,0 +1,30 @@
+- name: change python interpreter to python3
+  set_fact:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: stop the updated game server
+  docker_compose:
+    project_src: "{{service_path}}"
+    state: absent
+
+- name: remove updated game data
+  docker_volume:
+    volume_name: "{{v_name}}"
+    state: absent
+
+- name: use intermediate container to restore previous version of game data
+  docker_container:
+    name: restore_container
+    image: ubuntu:18.04
+    volumes:
+      - "{{ service_path }}/backup/update_backup:/backup"
+      - "{{v_name}}:/restore"
+    command: 'bash -c "tar --strip 1 xzf /backup/bedrock-server/{{backup_filename}} -C /restore && exit"'
+    auto_remove: yes
+
+- name: restart previous version of game server with restored game data
+  docker_compose:
+    project_src: "{{service_path}}"
+    pull: yes
+    state: present
+

@@ -1,0 +1,2 @@
+[test]
+vagrant ansible_host=10.0.4.254

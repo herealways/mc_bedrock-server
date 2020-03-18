@@ -1,0 +1,91 @@
+---
+# tasks file for mc_bedrock_server_update
+- name: change python interpreter to python3
+  set_fact:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: stop bedrock server container before backup
+  docker_container:
+    name: bedrock-server
+    state: stopped
+
+- name: backup all the game data of previous version (without stopping the container)
+  docker_container:
+    image: ubuntu:18.04
+    name: backup_data
+    volumes:
+      - "{{ service_path }}/backup/update_backup:/backup"
+    volumes_from: bedrock-server
+    command: 'bash -c "tar czf /backup/{{backup_filename}} /bedrock-server &&exit"'
+    auto_remove: yes
+  ignore_errors: yes
+
+- name: stop the old service
+  docker_compose:
+    project_src: "{{service_path}}"
+    state: absent
+  ignore_errors: true
+
+- name: create tmp dir in backup dir
+  file:
+    path: "{{ service_path }}/backup/update_data/tmp_data/"
+    state: directory
+
+# Here I save server setting files and game data to a tmp dir.
+# After updating, these files from tmp dir will be sent to new 
+# game's volume.
+
+- name: store world data and setting files before removing old volume
+  copy:
+    src: "{{item}}"
+    dest: "{{ service_path }}/backup/update_data/tmp_data/"
+    remote_src: "yes"
+  loop:
+      - "{{volume_path+'permissions.json'}}"
+      - "{{volume_path+'server.properties'}}"
+      - "{{volume_path+'whitelist.json'}}"
+      - "{{volume_path+'worlds'}}"
+
+- name: remove old volume
+  docker_volume:
+    volume_name: "{{v_name}}"
+    state: absent
+
+- name: copy new docker-compose file
+  copy:
+    src: "../../../docker-compose.yml"
+    dest: "{{ service_path }}/docker-compose.yml"
+
+- name: start new game server to create new volume
+  docker_compose:
+    project_src: "{{ service_path }}"
+    pull: yes
+    state: present
+  async: 3000
+  poll: 10
+
+- name: stop the new service before restoring game data and setting files from that tmp dir
+  docker_compose:
+    project_src: "{{ service_path }}"
+    state: absent
+
+- name: restore game data and setting files
+  copy:
+    src: "/backup/bedrock-server/tmp_data/"
+    dest: "{{volume_path}}"
+    remote_src: yes
+
+- name: start the new game server
+  docker_compose:
+    project_src: "{{service_path}}"
+    state: present
+
+- name: delete the tmp_data dir
+  file:
+    path: "{{ service_path }}/backup/update_data/tmp_data/"
+    state: absent 
+
+- name: rollback
+  import_tasks:
+    name: "roolback.yml"
+  tags: rollback,never   # never is used to not trigger rollback automatically, because by default all the tags will be executed. 

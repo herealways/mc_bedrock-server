@@ -1,0 +1,15 @@
+version: "2.4"
+services:
+    bedrock-server:
+      image: "herealways/bedrock-server:$MC_VERSION"
+      ports:
+        - 19132:19132/udp
+      #network_mode: host
+      container_name: bedrock-server
+      volumes:
+        - bedrock-server_data:/bedrock-server
+      restart: always
+      tty: true
+      stdin_open: true
+volumes:
+  bedrock-server_data:

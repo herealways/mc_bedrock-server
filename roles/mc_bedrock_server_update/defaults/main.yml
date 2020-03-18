@@ -1,0 +1,6 @@
+---
+# defaults file for mc_bedrock_server_update
+service_path: "/opt/bedrock-server"
+volume_path: "/var/lib/docker/volumes/bedrock-server_bedrock-server_data/_data/"
+v_name: "bedrock-server_bedrock-server_data"
+backup_filename: "last_backup_data_before_update.tar.gz"
