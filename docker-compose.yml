@@ -8,7 +8,7 @@ services:
       container_name: bedrock-server
       volumes:
         - bedrock-server_data:/bedrock-server
-      restart: always
+      restart: on-failure
       tty: true
       stdin_open: true
 volumes:
