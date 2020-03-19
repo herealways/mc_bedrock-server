@@ -33,7 +33,7 @@ pipeline {
                     extraVars: [MC_VERSION: "${PREVIOUS_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
+                    extras: "-u vagrant --private-key /root/jenkins_learning/jenkins_home/ansible/ansible_key")
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: 'ansible_inventory/test_server',\
