@@ -24,7 +24,7 @@ pipeline {
             }
             steps {
                 sh './jenkins/vm_setup.sh'
-                sh './ansible-galaxy install -r requirements.yml'
+                sh 'ansible-galaxy install -r requirements.yml'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     sh 'ansible-galaxy install -r requirements.yml'
