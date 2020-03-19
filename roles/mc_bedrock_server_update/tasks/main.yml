@@ -86,6 +86,5 @@
     state: absent 
 
 - name: rollback
-  import_tasks:
-    name: "roolback.yml"
+  import_tasks: "roolback.yml"
   tags: rollback,never   # never is used to not trigger rollback automatically, because by default all the tags will be executed. 
