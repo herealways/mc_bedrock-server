@@ -24,26 +24,24 @@ pipeline {
             }
             steps {
                 sh './jenkins/vm_setup.sh'
+                sh 'ansible-galaxy install -r requirements.yml'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
-                    sh 'ansible-galaxy install -r requirements.yml'
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    credentialsId: "${ANSIBLE_KEY}",\
                     inventory: 'ansible_inventory/test_server',\
                     tags: 'deploy',\
                     extraVars: [MC_VERSION: "${PREVIOUS_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: '-u vagrant')
+                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    credentialsId: "${ANSIBLE_KEY}",\
                     inventory: 'ansible_inventory/test_server',\
                     tags: 'update',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: '-u vagrant')
+                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
                 }
                 input message: 'Did the test pass? Should we push the image?'
                 sh './jenkins/vm_halt.sh'
@@ -70,11 +68,11 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    credentialsId: "${ANSIBLE_KEY}",\
                     inventory: 'ansible_inventory/production_server',\
                     tags: 'update',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
                     hostKeyChecking : false,\
+                    extras: "--private-key ${ANSIBLE_KEY}",\
                     colorized: true)
                 }
             }
