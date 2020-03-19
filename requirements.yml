@@ -1,2 +1,2 @@
-- name: ansible-get-docker
+- name: ansible_get_docker
   src: https://github.com/herealways/ansible-get-docker.git
