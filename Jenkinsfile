@@ -24,7 +24,6 @@ pipeline {
             }
             steps {
                 sh './jenkins/vm_setup.sh'
-                sh 'ansible-galaxy install -r requirements.yml'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     sh 'ansible-galaxy install -r requirements.yml'
@@ -33,7 +32,7 @@ pipeline {
                     inventory: 'ansible_inventory/test_server',\
                     tags: 'deploy',\
                     extraVars: [MC_VERSION: "${PREVIOUS_VERSION}"],\
-                    disableHostKeyChecking : true,\
+                    hostKeyChecking : false,\
                     colorized: true,\
                     extras: '-u vagrant')
 
@@ -42,7 +41,7 @@ pipeline {
                     inventory: 'ansible_inventory/test_server',\
                     tags: 'update',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
-                    disableHostKeyChecking : true,\
+                    hostKeyChecking : false,\
                     colorized: true,\
                     extras: '-u vagrant')
                 }
@@ -75,7 +74,7 @@ pipeline {
                     inventory: 'ansible_inventory/production_server',\
                     tags: 'update',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
-                    disableHostKeyChecking : true,\
+                    hostKeyChecking : false,\
                     colorized: true)
                 }
             }
