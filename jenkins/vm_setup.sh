@@ -15,10 +15,12 @@ if [ "$?" != 0 ]; then
     \cp Vagrant/Vagrantfile $VAGRANT_PROJECT_PATH -f
 fi
 
-
+# Refresh state. Check if the vm is aborted
+vm_id=$(vagrant global-status | awk '{if ($2=="mc_centos7") print $1}')
+vagrant status $vm_id
 
 # Check if the vm is running
-state=$(vagrant global-status | awk '{if ($2=="mc_centos7" && $4=="running") print "running"}')
+state=$(vagrant global-status | awk '{if ($2=="mc_centos7") print $4}')
 if [ "$state" != "running" ];then
     cd $VAGRANT_PROJECT_PATH && vagrant up
 fi
