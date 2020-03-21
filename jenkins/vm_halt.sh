@@ -1,2 +1,4 @@
 #!/bin/bash
-vagrant halt centos7_mc
+if [ "$state" = "running" ];then
+    cd $VAGRANT_PROJECT_PATH && vagrant halt
+fi
