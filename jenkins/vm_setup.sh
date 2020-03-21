@@ -18,7 +18,7 @@ fi
 
 
 # Check if the vm is running
-state=$(vagrant global-status | awk '{if ($2=="centos7_mc" && $4=="running") print "running"}')
+state=$(vagrant global-status | awk '{if ($2=="mc_centos7" && $4=="running") print "running"}')
 if [ "$state" != "running" ];then
     cd $VAGRANT_PROJECT_PATH && vagrant up
 fi

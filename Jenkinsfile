@@ -8,7 +8,7 @@ pipeline {
         MAJOR_VERSION = '1.14'
         MY_EMAIL = credentials("my_gmail")
         // Used in vm_setup.sh and vm_halt.sh
-        VAGRANT_PROJECT_PATH = "/root/vagrant_projects/centos7_mc"
+        VAGRANT_PROJECT_PATH = "/root/vagrant_projects/mc_centos7"
     }
     stages {
         stage('Build') {
