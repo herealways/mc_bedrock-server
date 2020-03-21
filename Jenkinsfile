@@ -31,21 +31,21 @@ pipeline {
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: 'ansible_inventory/test_server',\
-                    credentialsId: "${ANSIBLE_KEY}",\
+                    //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'deploy',\
                     extraVars: [MC_VERSION: "${PREVIOUS_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: "-u vagrant")
+                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: 'ansible_inventory/test_server',\
-                    credentialsId: "${ANSIBLE_KEY}",\
+                    //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'update',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: "-u vagrant")
+                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
                 }
                 input message: 'Did the test pass? Should we push the image?'
                 sh './jenkins/vm_halt.sh'
@@ -73,8 +73,9 @@ pipeline {
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: 'ansible_inventory/production_server',\
-                    credentialsId: "${ANSIBLE_KEY}",\
+                    //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'update',\
+                    extras: "--private-key ${ANSIBLE_KEY}"
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true)
