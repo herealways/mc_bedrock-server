@@ -75,7 +75,7 @@ pipeline {
                     inventory: 'ansible_inventory/production_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'update',\
-                    extras: "--private-key ${ANSIBLE_KEY}"
+                    extras: "--private-key ${ANSIBLE_KEY}",\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true)
