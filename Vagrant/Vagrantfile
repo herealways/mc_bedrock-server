@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   config.vm.synced_folder "/root/vagrant_projects/keys", "/keys"
-  config.vm.provision "shell", inline: "cat /keys/ansible_key.pub >> /home/vagrant/.ssh/authorized_keys"
+  config.vm.provision "shell", inline: "cat /keys/ansible_key.pub >> /home/vagrant/.ssh/authorized_keys; sudo systemctl disable firewalld --now"
 
   # Define CentOS7 for minecraft bedrock server
   config.vm.define "mc_centos7" do |mc|

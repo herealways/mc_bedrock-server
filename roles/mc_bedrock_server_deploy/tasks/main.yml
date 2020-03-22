@@ -29,5 +29,4 @@
   docker_compose:
     project_src: "{{service_path}}"
     pull: yes
-    build: yes
     state: present

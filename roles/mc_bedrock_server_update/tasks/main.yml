@@ -9,7 +9,7 @@
     name: bedrock-server
     state: stopped
 
-- name: backup all the game data of previous version (without stopping the container)
+- name: backup all the game data of previous version
   docker_container:
     image: ubuntu:18.04
     name: backup_data
@@ -26,7 +26,7 @@
     state: absent
   ignore_errors: true
 
-- name: create tmp dir in backup dir
+- name: create a tmp dir in backup dir to store world data and setting files
   file:
     path: "{{ service_path }}/backup/update_data/tmp_data/"
     state: directory

@@ -17,7 +17,7 @@ fi
 
 # Refresh state. Check if the vm is aborted
 vm_id=$(vagrant global-status | awk '{if ($2=="mc_centos7") print $1}')
-vagrant status $vm_id
+vagrant status $vm_id >/dev/null
 
 # Check if the vm is running
 state=$(vagrant global-status | awk '{if ($2=="mc_centos7") print $4}')
