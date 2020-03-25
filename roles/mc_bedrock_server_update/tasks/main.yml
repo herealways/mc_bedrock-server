@@ -23,7 +23,7 @@
 
 - name: create a tmp dir in backup dir to store world data and setting files
   file:
-    path: "{{ service_path }}/backup/update_data/tmp_data/"
+    path: "{{ service_path }}/backup/update_backup/tmp_data/"
     state: directory
 
 # Here I save server setting files and game data to a tmp dir.
@@ -33,7 +33,7 @@
 - name: store world data and setting files before removing old volume
   copy:
     src: "{{item}}"
-    dest: "{{ service_path }}/backup/update_data/tmp_data/"
+    dest: "{{ service_path }}/backup/update_backup/tmp_data/"
     remote_src: "yes"
   loop:
       - "{{volume_path+'permissions.json'}}"
@@ -66,7 +66,7 @@
 
 - name: restore game data and setting files
   copy:
-    src: "/backup/bedrock-server/tmp_data/"
+    src: "/backup/bedrock-server/update_data/tmp_data/"
     dest: "{{volume_path}}"
     remote_src: yes
 
