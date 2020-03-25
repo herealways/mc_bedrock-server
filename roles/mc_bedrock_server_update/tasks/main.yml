@@ -66,7 +66,7 @@
 
 - name: restore game data and setting files
   copy:
-    src: "/backup/bedrock-server/update_data/tmp_data/"
+    src: "/backup/bedrock-server/update_backup/tmp_data/"
     dest: "{{volume_path}}"
     remote_src: yes
 
@@ -77,7 +77,7 @@
 
 - name: delete the tmp_data dir
   file:
-    path: "{{ service_path }}/backup/update_data/tmp_data/"
+    path: "{{ service_path }}/backup/update_backup/tmp_data/"
     state: absent 
 
 # - name: rollback
