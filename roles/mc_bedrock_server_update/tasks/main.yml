@@ -1,15 +1,15 @@
 ---
 # tasks file for mc_bedrock_server_update
-- name: change python interpreter to python3
+- name: Changing python interpreter to python3
   set_fact:
     ansible_python_interpreter: /usr/bin/python3
 
-- name: stop game container but save the container
+- name: Stopping game container but save the container
   docker_container:
     name: bedrock-server
     state: stopped
 
-- name: backup all the game data of previous version
+- name: Backup all the game data of previous version
   docker_container:
     image: ubuntu:18.04
     name: backup_data
@@ -20,12 +20,12 @@
     auto_remove: yes
   ignore_errors: yes
 
-- name: remove old version of game container
+- name: Removing old version of game container
   docker_container:
     name: bedrock-server
     state: absent
 
-- name: create a tmp dir in backup dir to store world data and setting files
+- name: Creating a tmp dir in backup dir to store world data and setting files
   file:
     path: "{{ service_path }}/backup/update_backup/tmp_data/"
     state: directory
@@ -34,7 +34,7 @@
 # After updating, these files from tmp dir will be sent to new 
 # game's volume.
 
-- name: store world data and setting files before removing old volume
+- name: Storing world data and setting files before removing old volume
   copy:
     src: "{{item}}"
     dest: "{{ service_path }}/backup/update_backup/tmp_data/"
@@ -45,17 +45,17 @@
       - "{{volume_path+'whitelist.json'}}"
       - "{{volume_path+'worlds'}}"
 
-- name: remove old volume
+- name: Removing old volume
   docker_volume:
     volume_name: "{{v_name}}"
     state: absent
 
-- name: copy new docker-compose file
+- name: Copying new docker-compose file
   copy:
     src: "../../../docker-compose.yml"
     dest: "{{ service_path }}/docker-compose.yml"
 
-- name: start new game server to create new server binary and data
+- name: Starting new game server to create new server binary and data
   docker_compose:
     project_src: "{{ service_path }}"
     pull: yes
@@ -63,23 +63,23 @@
   async: 3000
   poll: 10
 
-- name: stop the new service before restoring game data and setting files from that tmp dir
+- name: Stopping the new service before restoring game data and setting files from that tmp dir
   docker_compose:
     project_src: "{{ service_path }}"
     state: absent
 
-- name: restore game data and setting files
+- name: Restoring game data and setting files
   copy:
     src: "{{ service_path }}/backup/bedrock-server/update_backup/tmp_data/"
     dest: "{{volume_path}}"
     remote_src: yes
 
-- name: start the new game server
+- name: Starting the new game server
   docker_compose:
     project_src: "{{service_path}}"
     state: present
 
-- name: delete the tmp_data dir
+- name: Deleting the tmp_data dir
   file:
     path: "{{ service_path }}/backup/update_backup/tmp_data/"
     state: absent 

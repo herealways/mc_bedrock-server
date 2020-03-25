@@ -1,6 +1,6 @@
 ---
 # tasks file for mc_bedrock_server_deploy
-- name: create mc server directory
+- name: creating mc server directory
   file:
     path: "{{ service_path }}/backup/{{ item }}"
     state: directory
@@ -8,24 +8,29 @@
     - "update_backup"
     - "daily_backup"
 
-- name: template conf files
+- name: templating conf files
   copy:
     src: '../../../docker-compose.yml'
     dest: "{{ service_path }}/docker-compose.yml"
     
 
-- name: change python interpreter to python3
+- name: changing python interpreter to python3
   set_fact:
     ansible_python_interpreter: /usr/bin/python3
   when: centos7 is defined
 
-- name: stop the (existing) mc bedrock server
+- name: stopping the (existing) mc bedrock server
   docker_compose:
     project_src: "{{service_path}}"
     state: absent
   ignore_errors: true
 
-- name: run new mc bedrock server
+- name: Making sure no container named bedrock-server exists
+  docker_container:
+    name: bedrock-server
+    state: absent
+
+- name: running new mc bedrock server
   docker_compose:
     project_src: "{{service_path}}"
     pull: yes
