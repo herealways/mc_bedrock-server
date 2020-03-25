@@ -70,7 +70,7 @@
 
 - name: Restoring game data and setting files
   copy:
-    src: "{{ service_path }}/backup/bedrock-server/update_backup/tmp_data/"
+    src: "{{ service_path }}/backup/update_backup/tmp_data/"
     dest: "{{volume_path}}"
     remote_src: yes
 
