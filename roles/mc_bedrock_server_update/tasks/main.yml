@@ -20,11 +20,10 @@
     auto_remove: yes
   ignore_errors: yes
 
-- name: stop the old service
-  docker_compose:
-    project_src: "{{service_path}}"
+- name: remove old version of game container
+  docker_container:
+    name: bedrock-server
     state: absent
-  ignore_errors: true
 
 - name: create a tmp dir in backup dir to store world data and setting files
   file:
