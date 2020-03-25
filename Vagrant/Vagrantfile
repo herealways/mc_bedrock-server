@@ -4,10 +4,11 @@ Vagrant.configure("2") do |config|
 
   # Define CentOS7 for minecraft bedrock server
   config.vm.define "mc_centos7" do |mc|
-    config.vm.hostname = "mc-centos7"
+    mc.vm.hostname = "mc-centos7"
     mc.vm.box = "generic/centos7"
     mc.vm.network "private_network", ip: "10.0.4.254"
     mc.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         v.memory = 2048
         v.cpus = 2
     end

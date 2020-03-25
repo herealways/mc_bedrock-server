@@ -4,10 +4,11 @@
   set_fact:
     ansible_python_interpreter: /usr/bin/python3
 
-- name: stop bedrock server container before backup
-  docker_container:
-    name: bedrock-server
-    state: stopped
+- name: stop the old service
+  docker_compose:
+    project_src: "{{service_path}}"
+    state: absent
+  ignore_errors: true
 
 - name: backup all the game data of previous version
   docker_container:
@@ -19,12 +20,6 @@
     command: 'bash -c "tar czf /backup/{{backup_filename}} /bedrock-server &&exit"'
     auto_remove: yes
   ignore_errors: yes
-
-- name: stop the old service
-  docker_compose:
-    project_src: "{{service_path}}"
-    state: absent
-  ignore_errors: true
 
 - name: create a tmp dir in backup dir to store world data and setting files
   file:
@@ -56,7 +51,7 @@
     src: "../../../docker-compose.yml"
     dest: "{{ service_path }}/docker-compose.yml"
 
-- name: start new game server to create new volume
+- name: start new game server to create new server binary and data
   docker_compose:
     project_src: "{{ service_path }}"
     pull: yes

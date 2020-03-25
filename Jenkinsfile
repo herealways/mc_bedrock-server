@@ -3,7 +3,7 @@ pipeline {
         label 'jenkins-host'
     }
     environment {
-        PREVIOUS_VERSION = '1.14.1.4'   // used in test and staging env
+        PREVIOUS_VERSION = '1.14.1.4'  // Version before update
         MC_VERSION = '1.14.32.1'
         MAJOR_VERSION = '1.14'
         MY_EMAIL = credentials("my_gmail")
@@ -16,7 +16,8 @@ pipeline {
                 branch "dev"
             }
             steps {
-                sh './jenkins/build.sh'
+                // Tag a specific version like 1.14.32.1
+                sh "./jenkins/build.sh ${MC_VERSION}"
             }
         }
 
@@ -26,7 +27,7 @@ pipeline {
             }
             steps {
                 sh './jenkins/vm_setup.sh'
-                sh 'ansible-galaxy install -r requirements.yml'
+                sh 'ansible-galaxy install -r requirements.yml --force'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
@@ -48,7 +49,6 @@ pipeline {
                     extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
                 }
                 input message: 'Did the test pass? Should we push the image?'
-                sh './jenkins/vm_halt.sh'
             }
         }
 
@@ -60,6 +60,7 @@ pipeline {
                 DOCKER_HUB = credentials("Docker_hub_herealways")
             }
             steps {
+                // Tag specific version, major version and latest.
                 sh "./jenkins/push.sh ${MC_VERSION} ${MAJOR_VERSION}"
             }
         }
@@ -84,16 +85,12 @@ pipeline {
         }
     }
     post {
-        failure {
-            emailext(subject: "${DEFAULT_SUBJECT}",\
-                     body: "${DEFAULT_CONTENT}",\
-                     to: "${MY_EMAIL}")
-        }
-
-        success {
-            emailext(subject: "${DEFAULT_SUBJECT}",\
-                     body: "${DEFAULT_CONTENT}",\
-                     to: "${MY_EMAIL}")
+        always {
+            sh './jenkins/vm_halt.sh'
+            emailext subject: "${env.JOB_NAME} - Branch: ${env.BRANCH_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}!",
+                     body: """${env.JOB_NAME} - Branch: ${env.BRANCH_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}:
+Check console output at ${env.BUILD_URL} to view the results.""",
+                     to: "${MY_EMAIL}"
         }
     }
 }
