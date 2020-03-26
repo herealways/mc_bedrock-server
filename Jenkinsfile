@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         PREVIOUS_VERSION = '1.14.1.4'  // Version before update
-        MC_VERSION = '1.14.32.1'
+        MC_VERSION = '1.14.32.1'  // We will update server to this version
         MAJOR_VERSION = '1.14'
         MY_EMAIL = credentials("my_gmail")
         // Used in vm_setup.sh and vm_halt.sh
@@ -18,6 +18,20 @@ pipeline {
             steps {
                 // Tag a specific version like 1.14.32.1
                 sh "./jenkins/build.sh ${MC_VERSION}"
+            }
+        }
+
+        // Push test image (new version of game server)
+        stage('Push stage 1') {
+            when {
+                branch "dev"
+            }
+            environment {
+                DOCKER_HUB = credentials("Docker_hub_herealways")
+            }
+            steps {
+                // Tag specific version, major version and latest.
+                sh "./jenkins/push_test.sh ${MC_VERSION}"
             }
         }
 
@@ -48,7 +62,7 @@ pipeline {
                     colorized: true,\
                     extras: "--private-key ${ANSIBLE_KEY}")
 
-                    input message: 'Did the test pass? Should we push the image?'
+                    input message: 'Did the test pass?'
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: '/root/ansible-playbooks/playbooks/mc_bedrock-server/ansible_inventory/remote_test_server',\
@@ -62,7 +76,8 @@ pipeline {
             }
         }
 
-        stage('Push') {
+        // Tag specific version, major version and latest.
+        stage('Push stage 2') {
             when {
                 branch "dev"
             }
@@ -70,7 +85,6 @@ pipeline {
                 DOCKER_HUB = credentials("Docker_hub_herealways")
             }
             steps {
-                // Tag specific version, major version and latest.
                 sh "./jenkins/push.sh ${MC_VERSION} ${MAJOR_VERSION}"
             }
         }
