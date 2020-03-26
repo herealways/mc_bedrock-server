@@ -1,2 +1,2 @@
 [test]
-vagrant ansible_host=10.0.4.254
+vagrant ansible_host=192.168.204.249
