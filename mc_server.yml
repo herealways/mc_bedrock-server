@@ -1,5 +1,5 @@
 ---
-- name: Deploy minecraft bedrock server
+- name: Deploying minecraft bedrock server
   hosts: all
   become: yes
   roles:
@@ -9,7 +9,7 @@
     MC_VERSION: "{{ MC_VERSION }}"
   tags: deploy
 
-- name: Update minecraft bedrock server
+- name: Updating minecraft bedrock server
   hosts: all
   become: yes
   roles:
@@ -17,4 +17,14 @@
   environment:
     MC_VERSION: "{{ MC_VERSION }}"
   tags: update
+
+- name: Halting minecraft bedrock server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Stopping game container
+      docker_container:
+        name: bedrock-server
+        state: absent
+  tags: halt
 

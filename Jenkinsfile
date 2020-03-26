@@ -8,7 +8,7 @@ pipeline {
         MAJOR_VERSION = '1.14'
         MY_EMAIL = credentials("my_gmail")
         // Used in vm_setup.sh and vm_halt.sh
-        VAGRANT_PROJECT_PATH = "/root/vagrant_projects/mc_centos7"
+        // VAGRANT_PROJECT_PATH = "/root/vagrant_projects/mc_centos7"
     }
     stages {
         stage('Build') {
@@ -26,18 +26,18 @@ pipeline {
                 branch "dev"
             }
             steps {
-                sh './jenkins/vm_setup.sh'
+                // sh './jenkins/vm_setup.sh'
                 sh 'ansible-galaxy install -r requirements.yml --force'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    inventory: 'ansible_inventory/test_server',\
+                    inventory: 'ansible_inventory/remote_test_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'deploy',\
                     extraVars: [MC_VERSION: "${PREVIOUS_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
+                    extras: "--private-key ${ANSIBLE_KEY}")
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: 'ansible_inventory/test_server',\
@@ -46,9 +46,19 @@ pipeline {
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
                     hostKeyChecking : false,\
                     colorized: true,\
-                    extras: "-u vagrant --private-key ${ANSIBLE_KEY}")
+                    extras: "--private-key ${ANSIBLE_KEY}")
+
+                    input message: 'Did the test pass? Should we push the image?'
+
+                    ansiblePlaybook(playbook: 'mc_server.yml',\
+                    inventory: 'ansible_inventory/test_server',\
+                    //credentialsId: "${ANSIBLE_KEY}",\
+                    tags: 'halt',\
+                    extraVars: [MC_VERSION: "${MC_VERSION}"],\
+                    hostKeyChecking : false,\
+                    colorized: true,\
+                    extras: "--private-key ${ANSIBLE_KEY}")
                 }
-                input message: 'Did the test pass? Should we push the image?'
             }
         }
 
@@ -70,6 +80,7 @@ pipeline {
                 branch  "master"
             }
             steps {
+                input message: 'Should we execute the playbook and update production server?'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
@@ -86,7 +97,7 @@ pipeline {
     }
     post {
         always {
-            sh './jenkins/vm_halt.sh'
+            // sh './jenkins/vm_halt.sh'
             emailext subject: "${env.JOB_NAME} - Branch: ${env.BRANCH_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}!",
                      body: """${env.JOB_NAME} - Branch: ${env.BRANCH_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}:
 Check console output at ${env.BUILD_URL} to view the results.""",

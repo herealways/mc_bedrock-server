@@ -1,1 +1,2 @@
 ansible_inventory/production_server
+ansible_inventory/remote_test_server
