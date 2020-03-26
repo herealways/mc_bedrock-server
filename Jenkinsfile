@@ -16,8 +16,10 @@ pipeline {
                 branch "dev"
             }
             steps {
-                // Tag a specific version like 1.14.32.1
-                sh "./jenkins/build.sh ${MC_VERSION}"
+                retry (3) {
+                    // Tag a specific version like 1.14.32.1
+                    sh "./jenkins/build.sh ${MC_VERSION}"
+                }
             }
         }
 
@@ -31,7 +33,9 @@ pipeline {
             }
             steps {
                 // Tag specific version, major version and latest.
-                sh "./jenkins/push_test.sh ${MC_VERSION}"
+                retry(3) {
+                    sh "./jenkins/push_test.sh ${MC_VERSION}"
+                }
             }
         }
 
@@ -85,7 +89,9 @@ pipeline {
                 DOCKER_HUB = credentials("Docker_hub_herealways")
             }
             steps {
-                sh "./jenkins/push.sh ${MC_VERSION} ${MAJOR_VERSION}"
+                retry(3) {
+                    sh "./jenkins/push.sh ${MC_VERSION} ${MAJOR_VERSION}"
+                }
             }
         }
 
