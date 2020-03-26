@@ -31,7 +31,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    inventory: 'ansible_inventory/remote_test_server',\
+                    inventory: '/root/ansible-playbooks/playbooks/mc_bedrock-server/ansible_inventory/remote_test_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'deploy',\
                     extraVars: [MC_VERSION: "${PREVIOUS_VERSION}"],\
@@ -40,7 +40,7 @@ pipeline {
                     extras: "--private-key ${ANSIBLE_KEY}")
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    inventory: 'ansible_inventory/test_server',\
+                    inventory: '/root/ansible-playbooks/playbooks/mc_bedrock-server/ansible_inventory/remote_test_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'update',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
@@ -51,7 +51,7 @@ pipeline {
                     input message: 'Did the test pass? Should we push the image?'
 
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    inventory: 'ansible_inventory/test_server',\
+                    inventory: '/root/ansible-playbooks/playbooks/mc_bedrock-server/ansible_inventory/remote_test_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'halt',\
                     extraVars: [MC_VERSION: "${MC_VERSION}"],\
@@ -84,7 +84,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
-                    inventory: 'ansible_inventory/production_server',\
+                    inventory: '/root/ansible-playbooks/playbooks/mc_bedrock-server/ansible_inventory/production_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
                     tags: 'update',\
                     extras: "--private-key ${ANSIBLE_KEY}",\
