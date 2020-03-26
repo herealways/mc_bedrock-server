@@ -22,6 +22,10 @@
   hosts: all
   become: yes
   tasks:
+    - name: changing python interpreter to python3
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+
     - name: Stopping game container
       docker_container:
         name: bedrock-server
