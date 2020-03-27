@@ -70,19 +70,23 @@ pipeline {
                     hostKeyChecking : false,\
                     colorized: true,\
                     extras: "--private-key ${ANSIBLE_KEY}")
+
+                    input message: "Did the test pass? Should we continue?"
                 }
-            }
-            input {
-                message 'Did the test pass? Should we proceed or abort?'
             }
         }
 
         stage('Stop test server') {
             input {
                 message 'Should we stop test server?'
+                ok "Yes, we should"
+                parameters {
+                    choice(name: 'IF_STOP_TEST_SERVER', choices: [True, False], description: '')
+                }
             }
             when {
                 branch 'dev'
+                environment name: 'IF_STOP_TEST_SERVER', value: True
             }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\

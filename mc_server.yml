@@ -30,5 +30,6 @@
       docker_container:
         name: bedrock-server
         state: absent
+      ignore_errors: true
   tags: halt
 
