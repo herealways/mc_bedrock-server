@@ -79,7 +79,7 @@ pipeline {
         stage('Stop test server') {
             input {
                 message 'Should we stop test server?'
-                ok "Yes, we should"
+                ok "Choose"
                 parameters {
                     choice(name: 'IF_STOP_TEST_SERVER', choices: [true, false], description: '')
                 }
@@ -123,8 +123,11 @@ pipeline {
                 branch  "master"
             }
             input {
-                message 'Should we execute the playbook and update production server?'
+                message '''Should we execute the playbook and update production server?\n
+                (It only works when branch is master.
+                We can safely proceed if the branch is not master dev)'''
                 submitter "here"
+                ok "Proceed "
             }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
