@@ -86,7 +86,7 @@ pipeline {
             }
             when {
                 branch 'dev'
-                environment name: 'IF_STOP_TEST_SERVER', value: true
+                environment name: 'IF_STOP_TEST_SERVER', value: 'true'
             }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
