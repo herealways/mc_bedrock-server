@@ -2,6 +2,11 @@ pipeline {
     agent {
         label 'jenkins-host'
     }
+    // parameters {
+    //     choice(name: 'IF_STOP_TEST_SERVER', choices: [True, False],\
+    //            description: '''Should we stop test server after test\n
+    //            (If we are on master branch, this parameter can be set to any value)''')
+    // }
     environment {
         PREVIOUS_VERSION = '1.14.1.4'  // Version before update
         MC_VERSION = '1.14.32.1'  // We will update server to this version
@@ -65,9 +70,23 @@ pipeline {
                     hostKeyChecking : false,\
                     colorized: true,\
                     extras: "--private-key ${ANSIBLE_KEY}")
+                }
+            }
+            input {
+                message 'Did the test pass? Should we proceed or abort?'
+            }
+        }
 
-                    input message: 'Did the test pass?'
-
+        stage('Stop test server') {
+            input {
+                message 'Should we stop test server?'
+            }
+            when {
+                branch 'dev'
+            }
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
+                keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\
                     inventory: '/root/ansible-playbooks/playbooks/mc_bedrock-server/ansible_inventory/remote_test_server',\
                     //credentialsId: "${ANSIBLE_KEY}",\
@@ -99,8 +118,11 @@ pipeline {
             when {
                 branch  "master"
             }
+            input {
+                message 'Should we execute the playbook and update production server?'
+                submitter "here"
+            }
             steps {
-                input message: 'Should we execute the playbook and update production server?'
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
                 keyFileVariable: 'ANSIBLE_KEY')]) {
                     ansiblePlaybook(playbook: 'mc_server.yml',\

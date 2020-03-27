@@ -7,12 +7,18 @@
   loop:
     - "update_backup"
     - "daily_backup"
+    - "weekly_backup"
 
-- name: templating conf files
+- name: Copying conf files
   copy:
     src: '../../../docker-compose.yml'
     dest: "{{ service_path }}/docker-compose.yml"
-    
+
+- name: Copying backup script
+  copy:
+    src: '../files/backup_server.sh'
+    dest: "{{ service_path }}/backup/"
+    mode: 0744
 
 - name: changing python interpreter to python3
   set_fact:
@@ -34,4 +40,12 @@
   docker_compose:
     project_src: "{{service_path}}"
     pull: yes
+    state: present
+
+- name: Add backup script to crontab
+  cron:
+    name: "Backup bedrock server data"
+    minute: "10"
+    hour: "4"
+    job: "{{ service_path }}/backup/backup_server.sh {{ service_path }}/backup"
     state: present
