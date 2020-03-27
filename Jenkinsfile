@@ -3,7 +3,7 @@ pipeline {
         label 'jenkins-host'
     }
     // parameters {
-    //     choice(name: 'IF_STOP_TEST_SERVER', choices: [True, False],\
+    //     choice(name: 'IF_STOP_TEST_SERVER', choices: [true, false],\
     //            description: '''Should we stop test server after test\n
     //            (If we are on master branch, this parameter can be set to any value)''')
     // }
@@ -81,12 +81,12 @@ pipeline {
                 message 'Should we stop test server?'
                 ok "Yes, we should"
                 parameters {
-                    choice(name: 'IF_STOP_TEST_SERVER', choices: [True, False], description: '')
+                    choice(name: 'IF_STOP_TEST_SERVER', choices: [true, false], description: '')
                 }
             }
             when {
                 branch 'dev'
-                environment name: 'IF_STOP_TEST_SERVER', value: True
+                environment name: 'IF_STOP_TEST_SERVER', value: true
             }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\
