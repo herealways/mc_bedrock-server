@@ -2,11 +2,6 @@ pipeline {
     agent {
         label 'jenkins-host'
     }
-    // parameters {
-    //     choice(name: 'IF_STOP_TEST_SERVER', choices: [true, false],\
-    //            description: '''Should we stop test server after test\n
-    //            (If we are on master branch, this parameter can be set to any value)''')
-    // }
     environment {
         PREVIOUS_VERSION = '1.14.1.4'  // Version before update
         MC_VERSION = '1.14.32.1'  // We will update server to this version
@@ -123,9 +118,9 @@ pipeline {
                 branch  "master"
             }
             input {
-                message '''Should we execute the playbook and update production server?\n
+                message '''Should we execute the playbook and update production server?
                 (It only works when branch is master.
-                We can safely proceed if the branch is not master dev)'''
+                We can safely proceed if the branch is not master)'''
                 submitter "here"
                 ok "Proceed "
             }
