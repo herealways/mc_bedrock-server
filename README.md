@@ -42,27 +42,27 @@ mc_bedrock-server/
 
 ## mc_server.yml
 This is an Ansible playbook. It is used for deploying, updating and stopping Minecraft Bedrock server.  
-It takes an environment variable "MC_VERSION" which is used to specify the server version.  
+It takes an environment variable **"MC_VERSION"** which is used to specify the server version to deploy or to update to.
 Tags:
-  * deploy: Deploy the server.
-  * update: Update the server.
-  * halt: Stop the server.
+  * **deploy**: Deploy the server.
+  * **update**: Update the server.
+  * **halt**: Stop the server.
 
 ## Ansible roles
-* mc_bedrock_server_deploy: Deploy Minecraft Bedrock server
-* mc_bedrock_server_update: Update Minecraft Bedrock server
-See README.md under each role.
-* ansible_get_docker: Install Docker on CentOS7, CentOS8 and Fedora30
+* **mc_bedrock_server_deploy**: Deploy Minecraft Bedrock server.
+* **mc_bedrock_server_update**: Update Minecraft Bedrock server.  
+    See README.md under each role.
+* **ansible_get_docker**: Install Docker on CentOS7, CentOS8 and Fedora30. 
 See [ansible_get_docker](https://github.com/herealways/ansible_get_docker)
 
 ## Jenkinsfile
-There are six stages defined in the Jenkinsfile: "Build", "Push stage 1", "Test", "Stop test server", "Push stage 2" and "Deploy". The first five stages are for pushes on dev branch, while the last is for pushes on master branch.  
-  * "Build" stage is for building test docker image.
-  * "Push stage 1" is for pushing the test docker image to Docker Hub.
-  * "Test" is for deploying the test environment and allow me to test it.
-  * "Stop test server" allows me to decide if I want to keep the test environment after testing it.
-  * "Push stage 2" is for tagging and pushing the tested docker image to Docker Hub.
-  * "Deploy" is used for updating game version on production server.
+There are six stages defined in the Jenkinsfile: **Build**, **Push stage 1**, **Test**, **Stop test server**, **Push stage 2** and **Deploy**. The first five stages are for pushes on dev branch, while the last is for pushes on master branch.  
+  * **Build** stage is for building test docker image.
+  * **Push stage 1** is for pushing the test docker image to Docker Hub.
+  * **Test** is for deploying the test environment and allow me to test it.
+  * **Stop test server** allows me to decide if I want to keep the test environment after testing it.
+  * **Push stage 2** is for tagging and pushing the tested docker image to Docker Hub.
+  * **Deploy** is used for updating game version on production server.
 
 ## Vagrant related
 It was used to create virtual machines for local test environment. Now I decide to use a vps for testing.
