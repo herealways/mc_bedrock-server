@@ -9,7 +9,7 @@
 当推送代码到master分支时，pipeline会让我手动确认是否要升级生产环境。如果我真的想这样做的话，pipeline就会自动升级游戏服务器。不过有时候我只是更新了文档，将其推送到了master分支。在这种情况下就不需要操作生产环境了。所以此时我会终止pipeline的执行。
 
 ## 项目组成
-这里简单介绍一下该项目的核心部分
+这里简单介绍一下该项目的核心部分。
 
 ## 项目目录
 ```
@@ -19,10 +19,10 @@ mc_bedrock-server/
 │   ├── production_server
 │   ├── remote_test_server
 │   └── test_server
-├── docker-compose.yml        # To deploy the game server.
+├── docker-compose.yml        # 用来部署游戏服务器
 ├── Docker_image
 │   └── Dockerfile
-├── jenkins                   # Storing build and push scripts
+├── jenkins                   # 存放构建与推送镜像的脚本
 │   ├── build.sh
 │   ├── push.sh
 │   ├── push_test.sh
@@ -32,7 +32,7 @@ mc_bedrock-server/
 ├── LICENSE
 ├── mc_server.yml
 ├── README.md
-├── requirements.yml          # Required ansible role.
+├── requirements.yml          # Ansible role的requirements文件
 ├── roles
 │   ├── mc_bedrock_server_deploy
 │   └── mc_bedrock_server_update
@@ -41,8 +41,8 @@ mc_bedrock-server/
 ```
 
 ## mc_server.yml
-此Ansible playbook用来部署、升级和停止我的世界基岩服务器。其需要"MC_VERSION"环境变量，用来指定游戏服务器版本。
-该playbbok有以下tags:
+此Ansible playbook用来部署、升级和停止我的世界基岩服务器。其需要设定"MC_VERSION"变量，用来指定游戏服务器版本。
+该playbook有以下tags:
   * **deploy**: 部署服务器。
   * **update**: 升级服务器。
   * **halt**: 停止服务器。
@@ -56,15 +56,15 @@ mc_bedrock-server/
 
 ## Jenkinsfile
 Pipeline内包含六个阶段：**Build**, **Push stage 1**, **Test**, **Stop test server**, **Push stage 2** 和 **Deploy**。前五个阶段在dev分支上工作，最后一个阶段只在master分支上工作。  
-  * **Build** 该阶段负责构建docker image。
-  * **Push stage 1** 该阶段负责将测试镜像推送到Docker Hub。
-  * **Test** 该阶段负责部署测试环境，并执行测试。
-  * **Stop test server** 决定是否在测试完之后停止测试服务器。
-  * **Push stage 2** 该阶段为测试过的镜像打标签，并将其推送到Docker Hub。
-  * **Deploy** 该阶段负责升级生产环境的游戏版本。
+  * **Build**: 该阶段负责构建docker image。
+  * **Push stage 1**: 该阶段负责将测试镜像推送到Docker Hub。
+  * **Test**: 该阶段负责部署测试环境，并执行测试。
+  * **Stop test server**: 决定是否在测试完之后停止测试服务器。
+  * **Push stage 2**: 该阶段为测试过的镜像打标签，并将其推送到Docker Hub。
+  * **Deploy**: 该阶段负责升级生产环境的游戏版本。
 
 ## Vagrant相关
-曾经我用它来搭建本地测试环境。不过后来我将测试环境移到了vps上。所以目前这些东西并未被使用。
+曾经我用它来搭建本地测试环境。不过后来我将测试环境移到了vps上。所以目前并未使用这些东西。
 
 ## 游戏服务器的目录结构
 ```

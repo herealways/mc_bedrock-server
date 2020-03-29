@@ -1,5 +1,6 @@
 # What is this?
 This is a self-entertaining project to record how I deploy and maintain my self- entertaining Minecraft Bedrock server.
+[中文文档](README_zh.md)
 
 # Overview
 This project uses Docker to build, Jenkins and Ansible playbook to test and deploy my Minecraft Bedrock server. This repository has two branches. "dev" branch is used for test/staging environment, while "master" is used for production environment.
@@ -19,7 +20,7 @@ mc_bedrock-server/
 │   ├── production_server
 │   ├── remote_test_server
 │   └── test_server
-├── docker-compose.yml        # To deploy the game server.
+├── docker-compose.yml        # To deploy the game server
 ├── Docker_image
 │   └── Dockerfile
 ├── jenkins                   # Storing build and push scripts
@@ -32,7 +33,7 @@ mc_bedrock-server/
 ├── LICENSE
 ├── mc_server.yml
 ├── README.md
-├── requirements.yml          # Required ansible role.
+├── requirements.yml          # Requirements file for Ansible role
 ├── roles
 │   ├── mc_bedrock_server_deploy
 │   └── mc_bedrock_server_update
@@ -42,8 +43,8 @@ mc_bedrock-server/
 
 ## mc_server.yml
 This is an Ansible playbook. It is used for deploying, updating and stopping Minecraft Bedrock server.  
-It takes an environment variable **"MC_VERSION"** which is used to specify the server version to deploy or to update to.  
-Tags:
+It takes a variable **"MC_VERSION"** which is used to specify the server version to deploy or to update to.  
+Tags for this playbook:
   * **deploy**: Deploy the server.
   * **update**: Update the server.
   * **halt**: Stop the server.
