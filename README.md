@@ -1,5 +1,5 @@
 # What is this?
-This is a self-entertaining project to record how I deploy and maintain my self- entertaining Minecraft Bedrock server.
+This is a self-entertaining project to record how I deploy and maintain my self- entertaining Minecraft Bedrock server.  
 [中文文档](README_zh.md)
 
 # Overview
