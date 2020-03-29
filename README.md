@@ -60,7 +60,7 @@ There are six stages defined in the Jenkinsfile: **Build**, **Push stage 1**, **
   * **Build** stage is for building test docker image.
   * **Push stage 1** is for pushing the test docker image to Docker Hub.
   * **Test** is for deploying the test environment and allow me to test it.
-  * **Stop test server** allows me to decide if I want to keep the test environment after testing it.
+  * **Stop test server** allows me to decide if I want to keep the test server running after testing it.
   * **Push stage 2** is for tagging and pushing the tested docker image to Docker Hub.
   * **Deploy** is used for updating game version on production server.
 
