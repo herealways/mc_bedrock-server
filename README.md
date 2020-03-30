@@ -85,3 +85,4 @@ It was used to create virtual machines for local test environment. Now I decide 
     * daily_backup: Only backup setting files and world data on 4:10 everyday.
     * weekly_backup: Backup all the game data on Friday 4:10.
     * update_backup: Backup all the game data before updating the server. It will only save the last version of game data before update.
+  **Note**: Backup files in tarball are under "bedrock-server" directory. When extracting them, you may need to add --strip=1 option.

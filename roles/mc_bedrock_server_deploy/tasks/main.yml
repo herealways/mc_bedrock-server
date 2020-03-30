@@ -31,7 +31,7 @@
     state: absent
   ignore_errors: true
 
-- name: Making sure no container named bedrock-server exists
+- name: Making sure no container named bedrock-server does not exist
   docker_container:
     name: bedrock-server
     state: absent

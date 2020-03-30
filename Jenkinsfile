@@ -73,7 +73,9 @@ pipeline {
 
         stage('Stop test server') {
             input {
-                message 'Should we stop test server?'
+                message '''Should we stop test server?
+                (Only works on dev branch.
+We can safely proceed if the branch is not master)'''
                 ok "Choose"
                 parameters {
                     choice(name: 'IF_STOP_TEST_SERVER', choices: [true, false], description: '')
@@ -120,7 +122,7 @@ pipeline {
             input {
                 message '''Should we execute the playbook and update production server?
                 (It only works when branch is master.
-                We can safely proceed if the branch is not master)'''
+We can safely proceed if the branch is not master)'''
                 submitter "here"
                 ok "Proceed "
             }

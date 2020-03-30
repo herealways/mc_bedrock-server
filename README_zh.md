@@ -83,3 +83,4 @@ Pipeline内包含六个阶段：**Build**, **Push stage 1**, **Test**, **Stop te
     * daily_backup: 在每天4:10时备份设置和世界文件。
     * weekly_backup: 在每周五4:10时备份所有游戏文件。
     * update_backup: 在升级前备份所有游戏文件。仅会保存上一个升级前版本的游戏文件。
+  **注意**：压缩包内备份文件位于"bedrock-server"目录下。解压的时候可能需要加上 --strip=1参数。
