@@ -68,11 +68,11 @@
     project_src: "{{ service_path }}"
     state: absent
 
+# Due to some unknown issues, copy module cannot correctly restore worlds data.
+# Therefore, shell module is used with cp command here
+# \\cp: disable alias cp="cp -i"
 - name: Restoring game data and setting files
-  copy:
-    src: "{{ service_path }}/backup/update_backup/tmp_data/"
-    dest: "{{volume_path}}"
-    remote_src: yes
+  shell: "\\cp -r {{ service_path }}/backup/update_backup/tmp_data/* {{volume_path}}"
 
 - name: Starting the new game server
   docker_compose:
