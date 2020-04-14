@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        // Push test image (new version of game server)
+        // Push test image (new version of game server) to Docker Hub
         stage('Push stage 1') {
             when {
                 branch "dev"
@@ -39,6 +39,7 @@ pipeline {
             }
         }
 
+        // Setup test environment
         stage('Test') {
             when {
                 branch "dev"
@@ -100,10 +101,17 @@ We can safely proceed if the branch is not master)'''
             }
         }
 
-        // Tag specific version, major version and latest.
+        // Tag and push tested docker image to Docker Hub
         stage('Push stage 2') {
             when {
-                branch "dev"
+                branch "master"
+            }
+            input {
+                message '''Should we push docker image and update production server?
+                (It only works when branch is master.
+We can safely proceed if the branch is not master)'''
+                submitter "here"
+                ok "Proceed "
             }
             environment {
                 DOCKER_HUB = credentials("Docker_hub_herealways")
@@ -118,13 +126,6 @@ We can safely proceed if the branch is not master)'''
         stage('Deploy') {
             when {
                 branch  "master"
-            }
-            input {
-                message '''Should we execute the playbook and update production server?
-                (It only works when branch is master.
-We can safely proceed if the branch is not master)'''
-                submitter "here"
-                ok "Proceed "
             }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible_key',\

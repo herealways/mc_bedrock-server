@@ -5,9 +5,9 @@ This is a self-entertaining project to record how I deploy and maintain my self-
 # Overview
 This project uses Docker to build, Jenkins and Ansible playbook to test and deploy my Minecraft Bedrock server. This repository has two branches. "dev" branch is used for test/staging environment, while "master" is used for production environment.
 
-When some change is pushed to dev branch, pipeline defined in Jenkinsfile will be executed. It will build the new version of the bedrock server docker image, set up test/staging environment and allow me to check if the new version works well (Sadly, I don't have any method of automatic testing). When I believe the new version works correctly, the pipeline will push the image to Docker Hub.
+When some change is pushed to dev branch, pipeline defined in Jenkinsfile will be executed. It will build the new version of the bedrock server docker image, push the test docker image to Docker Hub, set up test/staging environment and allow me to check if the new version works well (Sadly, I don't have any method of automatic testing).
 
-When some change is pushed to master branch, the pipeline will allow me to manually validate if I really want to update the production environment. If I really want to enjoy the new version of Minecraft Bedrock server, the pipeline will update the game server. Sometimes it is just some trival update that pushed to master branch (like update doc) and there is no need to touch production server, so I will abort the execution of pipeline.
+When some change is pushed to master branch, the pipeline will allow me to manually validate if I really want to update the production environment. If I really want to enjoy the new version of Minecraft Bedrock server, the pipeline will firstly tag and push the new docker image to Docker Hub. Then it will update the game server. Sometimes it is just some trival update that pushed to master branch (like update doc) and there is no need to touch production server, so I will abort the execution of pipeline.
 
 # Anatomy of this repository
 Here I will explain key components of this repository.
@@ -57,7 +57,7 @@ Tags for this playbook:
 See [ansible_get_docker](https://github.com/herealways/ansible_get_docker)
 
 ## Jenkinsfile
-There are six stages defined in the pipeline: **Build**, **Push stage 1**, **Test**, **Stop test server**, **Push stage 2** and **Deploy**. The first five stages are for pushes on dev branch, while the last is for pushes on master branch.  
+There are six stages defined in the pipeline: **Build**, **Push stage 1**, **Test**, **Stop test server**, **Push stage 2** and **Deploy**. The first four stages are for pushes on dev branch, while the last two stages are for pushes on master branch.  
   * **Build** stage is for building test docker image.
   * **Push stage 1** is for pushing the test docker image to Docker Hub.
   * **Test** is for deploying the test environment and allow me to test it.
@@ -86,3 +86,5 @@ It was used to create virtual machines for local test environment. Now I decide 
     * weekly_backup: Backup all the game data on Friday 4:10.
     * update_backup: Backup all the game data before updating the server. It will only save the last version of game data before update.
   **Note**: Backup files in tarball are under "bedrock-server" directory. When extracting them, you may need to add --strip=1 option.
+
+**Game server data** is stored in **docker volume**. The volume is created by docker-compose and its name is **bedrock-server_bedrock-server_data**.

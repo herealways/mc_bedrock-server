@@ -4,9 +4,9 @@
 # 概述
 此项目使用了Docker来构建镜像，使用Jenkins和Ansible playbook来测试和部署游戏服务器。代码库包含有两个分支。"dev"分支用于测试/staging环境，"master"分支代表生产环境。
 
-当推送代码到dev分支时，定义在Jenkinsfile里面的pipeline将会执行：首先将会构建新版本的游戏服务器镜像，然后pipeline会搭建起测试/staging环境，以便我检查新版本是否有问题（这里没有自动化测试）。如果新版本运行正常，pipeline会将新版本的镜像推送到Docker Hub。
+当推送代码到dev分支时，定义在Jenkinsfile里面的pipeline将会执行：首先将会构建新版本的游戏服务器镜像，并将测试镜像推送到Docker Hub。然后pipeline会搭建起测试/staging环境，以便我检查新版本是否有问题（这里没有自动化测试）。
 
-当推送代码到master分支时，pipeline会让我手动确认是否要升级生产环境。如果我真的想这样做的话，pipeline就会自动升级游戏服务器。不过有时候我只是更新了文档，将其推送到了master分支。在这种情况下就不需要操作生产环境了。所以此时我会终止pipeline的执行。
+当推送代码到master分支时，pipeline会让我手动确认是否要升级生产环境。如果我真的想这样做的话，pipeline就会首先将新版本的镜像打上标签并推送到Docker Hub，然后自动升级游戏服务器。不过有时候我只是更新了文档，将其推送到了master分支。在这种情况下就不需要操作生产环境了。所以此时我会终止pipeline的执行。
 
 ## 项目组成
 这里简单介绍一下该项目的核心部分。
@@ -55,7 +55,7 @@ mc_bedrock-server/
 可查看 [ansible_get_docker](https://github.com/herealways/ansible_get_docker)
 
 ## Jenkinsfile
-Pipeline内包含六个阶段：**Build**, **Push stage 1**, **Test**, **Stop test server**, **Push stage 2** 和 **Deploy**。前五个阶段在dev分支上工作，最后一个阶段只在master分支上工作。  
+Pipeline内包含六个阶段：**Build**, **Push stage 1**, **Test**, **Stop test server**, **Push stage 2** 和 **Deploy**。前四个阶段在dev分支上工作，最后两个阶段只在master分支上工作。  
   * **Build**: 该阶段负责构建docker image。
   * **Push stage 1**: 该阶段负责将测试镜像推送到Docker Hub。
   * **Test**: 该阶段负责部署测试环境，并执行测试。
@@ -84,3 +84,5 @@ Pipeline内包含六个阶段：**Build**, **Push stage 1**, **Test**, **Stop te
     * weekly_backup: 在每周五4:10时备份所有游戏文件。
     * update_backup: 在升级前备份所有游戏文件。仅会保存上一个升级前版本的游戏文件。
   **注意**：压缩包内备份文件位于"bedrock-server"目录下。解压的时候可能需要加上 --strip=1参数。
+
+**游戏服务器数据**存放在由docker-compose创建的**docker volume**中，volume的名字是**bedrock-server_bedrock-server_data**
