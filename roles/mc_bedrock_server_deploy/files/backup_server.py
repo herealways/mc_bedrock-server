@@ -5,6 +5,21 @@ from pathlib import Path
 import sys
 import subprocess as sub
 
+"""
+Author: herealways
+Date: 2020.5.10
+This script is responsible for game data's backup.
+Usage: ./backup_server.py <directory_stores_backup>
+The backup is only performed when the server is running.
+
+Daily backup is executed everyday. It will only backup the conf files and world data.
+Weekly backup is executed every Friday. It will backup all the game files including server binary.
+
+Daily backups that are more than 6 days old will be deleted,
+while weekly backups that are more than 27 days old will be deleted.
+
+The log file is stored at <directory_stores_backup>/log_file
+"""
 
 def check_game_running():
     p = sub.run('docker ps | grep bedrock-server', shell=True,
