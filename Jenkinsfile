@@ -3,8 +3,8 @@ pipeline {
         label 'jenkins-host'
     }
     environment {
-        PREVIOUS_VERSION = '1.14.1.4'  // Version before update
-        MC_VERSION = '1.14.32.1'  // We will update server to this version
+        PREVIOUS_VERSION = '1.14.32.1'  // Version before update
+        MC_VERSION = '1.14.60.5'  // We will update server to this version
         MAJOR_VERSION = '1.14'
         MY_EMAIL = credentials("my_gmail")
         // Used in vm_setup.sh and vm_halt.sh

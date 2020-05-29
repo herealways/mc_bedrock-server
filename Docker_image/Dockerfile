@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
-LABEL version=1.14.32.1
-ENV download_url="https://minecraft.azureedge.net/bin-linux/bedrock-server-1.14.32.1.zip"
+LABEL version=1.14.60.5
+ENV download_url="https://minecraft.azureedge.net/bin-linux/bedrock-server-1.14.60.5.zip"
 
 RUN apt-get update \
 && apt-get install --no-install-recommends --no-install-suggests -y curl ca-certificates unzip \
